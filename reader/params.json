@@ -1,0 +1,7 @@
+{
+    "database": "laboratorio",
+    "user": "estudante",
+    "password": "212223",
+    "host": "localhost",
+    "port": "5430"
+}
