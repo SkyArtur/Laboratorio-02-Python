@@ -2,6 +2,12 @@
 
 # Laboratório 02 - Python - Conectando com o banco de dados.
 
+<hr/>
+
+[Laboratório 01 - PL/pgSQL - Trabalhando com PostgreSQL e PL/pgSQL.](https://github.com/SkyArtur/Laboratorio-01-PLpgSQL)
+
+<hr/>
+
 Usaremos o banco de dados PostgreSQL que criamos no Laboratório 01, por isso, é importante que você tenha 
 acompanhado o primeiro execício dos nossos laboratórios.
 
