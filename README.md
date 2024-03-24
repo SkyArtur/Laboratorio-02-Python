@@ -4,7 +4,7 @@
 
 <hr/>
 
-[Laboratório 01 - PL/pgSQL - Trabalhando com PostgreSQL e PL/pgSQL.](https://github.com/SkyArtur/Laboratorio-01-PLpgSQL)
+[Laboratório 01 - Trabalhando com PostgreSQL e PL/pgSQL.](https://github.com/SkyArtur/Laboratorio-01-PLpgSQL)
 
 <hr/>
 
