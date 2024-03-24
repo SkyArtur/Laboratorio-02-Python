@@ -1,6 +1,6 @@
 <hr/>
 
-# Laboratório 02 - Python - Conectando com o banco de dados.
+# Laboratório 02 - Conectando com o banco de dados.
 
 <hr/>
 
