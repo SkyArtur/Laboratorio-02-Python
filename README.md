@@ -40,7 +40,7 @@ CONNECTION_STRING=postgresql://localhost:5430/laboratorio?user=estudante&passwor
 Essa metodologia, além de manter o código mais organizado, favorece a segurança e facilita o reuso do nosso objeto
 de conexão. A string de conexão pode ser dividida da seguinte forma:
 ``
-<driver_banco_de_dados>://<host_do_servidor>/<nome_banco_de_dados>?user=<nome_usuario>&password=<senha_do_usuario>
+<driver_banco_de_dados>://<host_do_servidor:porta>/<nome_banco_de_dados>?user=<nome_usuario>&password=<senha_do_usuario>
 ``
 
 ## Um pouco sobre objetos
