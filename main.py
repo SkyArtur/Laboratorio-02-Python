@@ -3,18 +3,14 @@ from datetime import datetime
 
 db = Connector()
 
-produtos = db.execute('SELECT * FROM selecionar_produto_em_estoque();')
+salvar = db.execute(
+    'SELECT * FROM registrar_produto_no_estoque(%s, %s, %s, %s, %s);',
+    ('limão', 450, 432, 30, datetime.today().strftime('%Y-%m-%d')),
+    True
+)
+print(f'Produto salvo: {"OK" if salvar[0] else "Não"}.\n\n')
 
-for produto in produtos:
+for produto in db.execute('SELECT * FROM selecionar_produto_em_estoque();'):
     print(produto)
 
-# produto = db.execute('SELECT * FROM selecionar_produto_em_estoque(%s);', ('abacate',), True)
-#
-# print(produto)
-
-# print(db.execute(
-#         'SELECT * FROM registrar_produto_no_estoque(%s, %s, %s, %s, %s);',
-#         ('melancia', 150, 350, 35, datetime.today().strftime('%Y-%m-%d'))
-#     )
-# )
 

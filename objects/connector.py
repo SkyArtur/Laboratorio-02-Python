@@ -1,5 +1,8 @@
+import os
+import dotenv
 import psycopg2
-from functions import reader
+
+dotenv.load_dotenv()
 
 
 class Connector:
@@ -24,7 +27,7 @@ class Connector:
         :return: tupla de resultados da consulta.
         """
         try:
-            self.__conn = psycopg2.connect(**reader('params.json'))
+            self.__conn = psycopg2.connect(os.getenv('CONNECTION_STRING'))
             self.__cursor = self.__conn.cursor()
             self.__cursor.execute(query, data)
             self.__response = self.__cursor.fetchall() if not fetchone else self.__cursor.fetchone()

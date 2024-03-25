@@ -11,47 +11,10 @@ Laboratórios:
 Usaremos o banco de dados PostgreSQL que criamos no Laboratório 01, por isso, é importante que você tenha 
 acompanhado o primeiro execício dos nossos laboratórios.
 
-Vamos trabalhar em uma aplicação de linha de comando. Apesar de um visual nada moderno e atraente, uma aplicação desse 
-tipo é mais trabalhosa de se produzir, mas, permite uma abordagem maior de assuntos relacionados a programação.
+Vamos trabalhar em aplicações futuras que utilizem o banco de dados que desenvolvemos anteriormente. Neste segundo 
+laboratório, desenvolveremos uma forma de estabelecer uma conexão com ele. Utilizaremos a linguagem Python, nesta experiència
+e deixaremos pronto um objeto que possamos utilizar em nossos projetos futuros.
 
-## Lendo arquivos
-
-Em Python, como em outras linguagens de programação, nós temos as funções '*built-ins*', que são integradas a linguagem 
-pelos desenvolvedores dela e ficam disponíveis nativamente. Uma destas funções é a *open()*, que podemos utilizar para 
-abrir arquivos.
-```python
-#./main.py
-arquivo = open('./arquivo.txt', 'r', encoding='utf-8')
-print(arquivo.read())
-arquivo.close()
-```
-``print:``
-```shell
-conteúdo do arquivo: 
-Eu sou um texto dentro do arquivo.
-```
-A função *open()* recebe alguns parâmetros como o caminho do arquivo, o modo de abertura do arquivo ('r', 'w', 'a') e a 
-codificação binária ('UTF-8') são as mais relevantes para o nosso trabalho aqui, mas se você quiser saber mais a respeito,
-este [link](https://acervolima.com/funcao-python-open/) leva a um excelente artigo sobre a função *open()*.
-
-Mas voltando ao nosso projeto, perceba que precisamos fechar o arquivo utilizando o método **close()**. Após trabalhar 
-com o arquivo, é crucial fechá-lo. Isso libera recursos do sistema e garante que todas as alterações sejam salvas. 
-Por isso vamos trabalhar com o gerenciador de contexto **with**. O gerenciador de contexto é uma ferramenta essencial em
-Python para manipulação segura de recursos, como a abertura e fechamento de arquivos. Quando trabalhamos com arquivos, 
-bancos de dados ou outros recursos, eles são limitados em quantidade. Por exemplo, um processo só pode abrir um número 
-específico de arquivos simultaneamente. Se não liberarmos esses recursos adequadamente, ocorrerão vazamentos de recursos, 
-o que pode afetar o desempenho do sistema. Ele garante que os recursos sejam liberados automaticamente após o uso, 
-mesmo em caso de exceções.
-```python
-#./main.py
-with open('./arquivo.txt', 'r', encoding='utf-8') as arquivo:
-    print('conteúdo do arquivo: ', arquivo.read(), sep='\n')
-```
-``print:``
-```shell
-conteúdo do arquivo: 
-Eu sou um texto dentro do arquivo.
-```
 ## Trabalhando com bibliotecas
 
 As bibliotecas no Python são conjuntos de módulos e funções pré-definidos que nos permitem realizar diversas tarefas 
@@ -60,82 +23,37 @@ pois fornecem funcionalidades adicionais que expandem as capacidades da linguage
 
 Nós podemos utilizar as bibliotecas padrões ou instalar uma biblioteca externa disponível no Python Package Index (PyPI).
 
-Em nosso projeto, nós utilizaremos basicamente bibliotecas padrões como *pathlib*, *json*, *datetime*, etc. A única 
-biblioteca externa que iremos utilizar é a *psycopg2*, que nos oferecerá recursos para a nossa conexão com o banco de dados
-e pode ser instalada com diretamente com o comando ``pip install psycopg2`` ou utilizando o arquivo requirements.txt 
-deste repositório com o comando ``pip install -r requirements.txt``
+Em nosso projeto, nós utilizaremos basicamente bibliotecas padrões como *pathlib*, *json*, *datetime*, etc. Mas também
+instalaremos bibliotecas externas. A princípio, vamos utilizar as bibliotecas *psycopg2* e *python_dotenv*. A primeira 
+nos oferecerá recursos para a nossa conexão com o banco de dados e a segunda carregará a variável de ambiente que editaremos
+em um arquivo '.env' que conterá os dados do nosso banco de dados.  Elas podem ser instaladas diretamente com o comando 
+``pip install psycopg2 python_dotenv`` ou utilizando o arquivo requirements.txt deste repositório com o comando 
+``pip install -r requirements.txt``
 
-## A primeira função do projeto
+## Editando arquivo *.env*
 
-Vamos elaborar uma função que retorne o conteúdo de um arquivo. Ela será útil quando quisermos exibir nossos menus e tabelas
-que serão carregados a partir de arquivos de texto.
-
-Primeiramente vamos criar um diretório na raiz do nosso projeto com o nome `files`, nós utilizaremos este diretório como
-raiz para todos os arquivos texto que utilizaremos. 
-
-Vamos editar um arquivo json com os parâmetros do nosso banco de dados e nomeá-lo como *params.json*.
-```json
-{
-    "database": "laboratorio",
-    "user": "estudante",
-    "password": "212223",
-    "host": "localhost",
-    "port": "5430"
-}
+Primeiramente, iremos criar na raís do projeto um arquivo '.env'. Nele, editaremos uma variável de ambiente chamada
+CONNECTION_STRING, onde atribuiremos os dados de conexão com o nosso banco de dados:
+```dotenv
+CONNECTION_STRING=postgresql://localhost/laboratorio?user=estudante&password=212223
 ```
-Agora vamos criar um pacote python chamado *functions* na raiz do nosso projeto, lembrando que um pacote python é um diretório
-como um arquivo __ init __.py, em seguida, vamos criar um dentro dele outro arquivo chamado *reader.py* e programar a nossa
-função *reader()*. 
-```python
-#./functions/reader.py
-from pathlib import Path
-import json
+Essa metodologia, além de manter o código mais organizado, favorece a segurança e facilita o reuso do nosso objeto
+de conexão. A string de conexão pode ser dividida da seguinte forma:
+``
+<driver_banco_de_dados>://<host_do_servidor>/<nome_banco_de_dados>?user=<nome_usuario>&password=<senha_do_usuario>
+``
 
-
-def reader(filename):
-    try:
-        root = Path(__file__).resolve().parent.parent.joinpath('files')
-        with open(root.joinpath(filename), encoding="utf-8") as file:
-            if '.json' in filename:
-                return json.load(file)
-            else:
-                return file.read()
-    except (FileNotFoundError, TypeError) as error:
-        return f'Error reading {filename}: {error}'
-```
-
-No arquivo __ init __.py do nosso pacote *functions*, vamos realizar o import desta função:
-```python
-#./functions/__init__.py
-from .reader import reader
-```
-Agora podemos utilizar esta função a partir deste nosso pacote em qualquer outro ponto do nosso código.
-```python
-#./main.py
-from functions import reader
-
-
-content = reader('params.json')
-print('conteúdo do arquivo params.json: ', content, sep='\n\n')
-```
-``print:``
-```shell
-conteúdo do arquivo params.json: 
-
-{'database': 'laboratorio', 'user': 'estudante', 'password': '212223', 'host': 'localhost', 'port': '5430'}
-```
-
-## Partindo para os objetos
+## Um pouco sobre objetos
 
 Nossa conexão com o banco de dados será feita através da biblioteca *psycopg2*, mas, ao invés de ficar importando essa 
-biblioteca em todos os pontos do nosso código em que execute uma conexão com o banco de dados, nós vamos desenvolver um 
-objeto que guardará essa lógica. 
+biblioteca em todos os módulos do nosso código que execute uma conexão com o banco de dados, nós vamos desenvolver um 
+objeto que guardará a lógica necessária. 
 
-Assim como podemos dizer que em Javascript, tudo é uma função, em Python, tudo é um objeto. Isso inclui números, strings, 
-listas, funções e até mesmo os tipos de dados que você mesmo pode criar. Um objeto em Python é uma coleção de dados 
+Em Javascript, podemos dizer que tudo é uma função, porém, em Python tudo é um objeto. Isso inclui números, strings, 
+listas, funções e até mesmo os tipos de dados que você mesmo criar. Um objeto em Python é uma coleção de dados 
 (variáveis) e métodos (funções) que atuam nesses dados. Em outras palavras, um objeto representa uma entidade ou conceito, 
-com suas propriedades e ações que podem ser realizadas. Vamos definir aqui algumas nomenclaturas com base no exemplo a 
-seguir:
+com suas propriedades e ações que podem ser realizadas. Vamos dar uma olhadinha nos termos utilizados com um exemplo 
+simplificado de um objeto:
 ```python
 class Pessoa:
     __especie = 'Humano' # propriedade de classe
@@ -229,7 +147,7 @@ print(f'{pessoa4.nome} : {pessoa4.especie}')
 ```shell
 Clark Kent : criptoniano
 ```
-Agora que conhecemos um pouco sobre objetos em Python, que tal seguirmos adiante? 
+Agora que conhecemos um pouco sobre objetos em Python, vamos falar um pouco sobre o design patterns do nosso objeto. 
 
 ## Falando um pouco sobre padrões de projetos
 
@@ -275,12 +193,79 @@ conn db2: sqlite:///sqlite.db
 Perceba que mesmo que tenhamos duas instâncias com nomes diferentes, elas ocupam o mesmo endereço de memória. Além disso,
 ao realizarmos uma segunda instância, com parâmetro diferente, o valor do atributo da primeira instância foi sobrescrito.
 
-Conceitos definidos, vamos continuar nosso trabalho. Primeiramente, vamos criar um pacote python com o nome *objects*
-na raiz do nosso projeto e acrescentar a esse pacote um arquivo *connector.py*.
+Conceitos definidos, vamos continuar nosso trabalho. 
+
+## Partindo para o Connector
+
+Primeiramente, vamos criar um pacote python com o nome *objects* na raiz do nosso projeto e acrescentar a esse pacote um 
+arquivo *connector.py*. Lembrando que um pacote Python, nada mais é que um diretório com um arquivo '__ init __.py' dentro
+dele.
+
+Vamos importar em nosso arquivo *connector.py*, as bibliotecas, *os*, *dotenv* e *psycopg2* e em seguida, carregar a nossa
+variável de ambiente com o método '.load_dotenv()':
 ```python
-#./objects/connector.py
+import os
+import dotenv
 import psycopg2
-from functions import reader
+
+dotenv.load_dotenv()
+
+```
+Agora, usaremos dois Dunder Methods, que são comuns a todas as classes em Python. O método '__ new __()', é utilizado
+para controlar a criação de novas instâncias de uma classe, e nós usaremos ele para manipular a propriedade '__instance'.
+
+Lembre-se que definimos propriedades como sendo um atributo que pertence à classe, e por isso é compartilhada
+por todas as instâncias da classe. É por essa razão que ao utilizarmos o método '__ new __()',
+para atribuir à propriedade '__instance', uma instância da própria classe, criamos um objeto Singleton.
+
+O método __ init __(), responsável por controlar a inicialização da classe, não recebe parâmetros e apenas inicia três 
+atributos que serão manipulados pelo método '.execute()'.
+```python
+class Connector:
+    __instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls.__instance or cls.__instance is None:
+            cls.__instance = super(Connector, cls).__new__(cls)
+        return cls.__instance
+
+    def __init__(self, *args, **kwargs):
+        self.__conn = None
+        self.__cursor = None
+        self.__response = None
+```
+O método '.execute()' é responsável por realizar a conexão com o banco de dados, executar a query e retornar os dados.
+Ele possui três parâmetros: 
+- query: Texto SQL.
+- data: Tupla com os dados que se deseja repassar para o banco de dados, tanto para registro, como para busca.
+- fetchone: Opcional para a realização de buscas unitárias.
+
+Toda a lógica da função está definida em um bloco 'try-except', que está sendo usado não apenas para controle de exceções,
+mas também como um gerenciador de contexto, pois, utilizamos a claúsula *finally*, para garantir que o banco de dados e 
+o cursor serão fechados, mesmo que uma exceção ocorra.
+```python
+    def execute(self, query: str, data: tuple = None, fetchone: bool = False) -> tuple:
+        try:
+            self.__conn = psycopg2.connect(os.getenv('CONNECTION_STRING'))
+            self.__cursor = self.__conn.cursor()
+            self.__cursor.execute(query, data)
+            self.__response = self.__cursor.fetchall() if not fetchone else self.__cursor.fetchone()
+        except (TypeError, psycopg2.DatabaseError) as error:
+            print(f'Error while connecting to PostgreSQL: {error}')
+        else:
+            self.__conn.commit()
+            return self.__response
+        finally:
+            self.__cursor.close()
+            self.__conn.close()
+```
+A estrutura completa do nosso objeto fica sendo a seguinte:
+```python
+import os
+import dotenv
+import psycopg2
+
+dotenv.load_dotenv()
 
 
 class Connector:
@@ -299,13 +284,13 @@ class Connector:
     def execute(self, query: str, data: tuple = None, fetchone: bool = False) -> tuple:
         """
         Executa a query e retorna o resultado da consulta.
-        :param query: consulta SQL. 
+        :param query: consulta SQL.
         :param data: dados pra a consulta ou registro.
         :param fetchone: retornar único valor da consulta.
         :return: tupla de resultados da consulta.
         """
         try:
-            self.__conn = psycopg2.connect(**reader('params.json'))
+            self.__conn = psycopg2.connect(os.getenv('CONNECTION_STRING'))
             self.__cursor = self.__conn.cursor()
             self.__cursor.execute(query, data)
             self.__response = self.__cursor.fetchall() if not fetchone else self.__cursor.fetchone()
@@ -318,12 +303,15 @@ class Connector:
             self.__cursor.close()
             self.__conn.close()
 ```
-Não vamos esquecer de importar o nosso Connector em __ init __.py.
+Não vamos esquecer de importar o nosso *Connector()* em __ init __.py do pacote *objects*.
 
-Agora podemos utilizar as 'procedures' que criamos no nosso laboratorio de PL/pgSQL:
+## Realizando alguns testes
+
+Agora podemos utilizar as funções que criamos no nosso laboratorio de PL/pgSQL:
 - buscando todos os produtos:
 ```python
 from objects import Connector
+
 
 db = Connector()
 
@@ -339,8 +327,13 @@ for produto in produtos:
 ('laranja', 250, Decimal('440.00'), Decimal('15'), Decimal('2.02'))
 ('tomate', 500, Decimal('732.00'), Decimal('25'), Decimal('1.83'))
 ```
-- buscando um produto
+- buscando um produto por nome.
 ```python
+from objects import Connector
+
+
+db = Connector()
+
 produto = db.execute('SELECT * FROM selecionar_produto_em_estoque(%s);', ('abacate',), True)
 
 print(produto)
@@ -349,28 +342,65 @@ print(produto)
 ```shell
 ('abacate', 279, Decimal('455.00'), Decimal('22'), Decimal('1.85'))
 ```
-- inserindo dados:
+- inserindo dados no banco de dados:
 ```python
-print(db.execute(
-        'SELECT * FROM registrar_produto_no_estoque(%s, %s, %s, %s, %s);',
-        ('melancia', 150, 350, 35, datetime.today().strftime('%Y-%m-%d'))
-    )
-)
-produtos = db.execute('SELECT * FROM selecionar_produto_em_estoque();')
+from objects import Connector
+from datetime import datetime
 
-for produto in produtos:
+db = Connector()
+
+salvar = db.execute(
+    'SELECT * FROM registrar_produto_no_estoque(%s, %s, %s, %s, %s);',
+    ('limão', 450, 432, 30, datetime.today().strftime('%Y-%m-%d')),
+    True
+)
+print(f'Produto salvo: {"OK" if salvar[0] else "Não"}.\n\n')
+
+for produto in db.execute('SELECT * FROM selecionar_produto_em_estoque();'):
     print(produto)
 ```
 ``print:``
 ```shell
-[(True,)]
+Produto salvo: OK.
 
 
 ('abacate', 279, Decimal('455.00'), Decimal('22'), Decimal('1.85'))
 ('banana', 226, Decimal('265.00'), Decimal('25'), Decimal('1.33'))
 ('laranja', 250, Decimal('440.00'), Decimal('15'), Decimal('2.02'))
-('melancia', 150, Decimal('350.00'), Decimal('35'), Decimal('3.15'))
+('limão', 450, Decimal('432.00'), Decimal('30'), Decimal('1.25'))
+('manga', 500, Decimal('635.00'), Decimal('30'), Decimal('1.65'))
+('morango', 602, Decimal('832.00'), Decimal('45'), Decimal('1.86'))
 ('tomate', 500, Decimal('732.00'), Decimal('25'), Decimal('1.83'))
 ```
-Bom, ao que parece stá tudo funcionando como o esperado. Continuaremos em nossos próximos laboratórios a desenvolver 
-a nossa aplicação.
+- tentando salvar o mesmo produto novamente.
+```python
+from objects import Connector
+from datetime import datetime
+
+db = Connector()
+
+salvar = db.execute(
+    'SELECT * FROM registrar_produto_no_estoque(%s, %s, %s, %s, %s);',
+    ('limão', 450, 432, 30, datetime.today().strftime('%Y-%m-%d')),
+    True
+)
+print(f'Produto salvo: {"OK" if salvar[0] else "Não"}.\n\n')
+
+for produto in db.execute('SELECT * FROM selecionar_produto_em_estoque();'):
+    print(produto)
+```
+``print:``
+```shell
+Produto salvo: Não.
+
+
+('abacate', 279, Decimal('455.00'), Decimal('22'), Decimal('1.85'))
+('banana', 226, Decimal('265.00'), Decimal('25'), Decimal('1.33'))
+('laranja', 250, Decimal('440.00'), Decimal('15'), Decimal('2.02'))
+('limão', 450, Decimal('432.00'), Decimal('30'), Decimal('1.25'))
+('manga', 500, Decimal('635.00'), Decimal('30'), Decimal('1.65'))
+('morango', 602, Decimal('832.00'), Decimal('45'), Decimal('1.86'))
+('tomate', 500, Decimal('732.00'), Decimal('25'), Decimal('1.83'))
+```
+Bom, ao que parece está tudo funcionando como o esperado. Continuaremos em nossos próximos laboratórios a desenvolver 
+a nossa aplicação. 
