@@ -35,7 +35,7 @@ em um arquivo '.env' que conterá os dados do nosso banco de dados.  Elas podem 
 Primeiramente, iremos criar na raís do projeto um arquivo '.env'. Nele, editaremos uma variável de ambiente chamada
 CONNECTION_STRING, onde atribuiremos os dados de conexão com o nosso banco de dados:
 ```dotenv
-CONNECTION_STRING=postgresql://localhost/laboratorio?user=estudante&password=212223
+CONNECTION_STRING=postgresql://localhost:5430/laboratorio?user=estudante&password=212223
 ```
 Essa metodologia, além de manter o código mais organizado, favorece a segurança e facilita o reuso do nosso objeto
 de conexão. A string de conexão pode ser dividida da seguinte forma:
