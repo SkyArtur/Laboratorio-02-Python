@@ -162,7 +162,7 @@ if __name__ == '__main__':
 ```
 ``print:``
 ```shell
-Pessoa 4: Kal-El : Criptoniano
+Pessoa 4: Kal-el : Criptoniano
 ```
 Agora que conhecemos um pouco sobre objetos em Python, vamos falar um pouco sobre o design pattern do nosso objeto. 
 

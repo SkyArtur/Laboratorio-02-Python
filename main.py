@@ -3,7 +3,6 @@ from datetime import datetime
 
 
 if __name__ == '__main__':
-
     db = Connector()
 
     salvar = db.execute(
@@ -15,5 +14,3 @@ if __name__ == '__main__':
 
     for produto in db.execute('SELECT * FROM selecionar_produto_em_estoque();'):
         print(produto)
-
-
