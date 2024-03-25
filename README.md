@@ -56,35 +56,47 @@ com suas propriedades e ações que podem ser realizadas. Vamos dar uma olhadinh
 simplificado de um objeto:
 ```python
 class Pessoa:
-    __especie = 'Humano' # propriedade de classe
-    
-    def __init__(self, nome=None): # parâmetro 
-        self.nome = nome # atributo de instância
-    
+    __especie = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls.__especie or cls.__especie is None:
+            cls.__especie = 'Humano'
+        return super(Pessoa, cls).__new__(cls)
+
+    def __init__(self, nome=None):  # parâmetro
+        self.nome = nome  # atributo de instância
+
     @property
     def especie(self):
         return self.__especie
-        
-    def apresentar(self): # método
+
+    def apresentar(self):  # método
         print(f'Olá eu sou {self.nome}')
 
-    @staticmethod # método estático
+    @staticmethod  # método estático
     def falar(mensagem):
         print(mensagem)
 
-    @classmethod # método de classe
-    def super(cls):
-        superhomen = cls('Kal-El')
-        cls.__especie = 'criptoniano'
-        return superhomen
+    @classmethod  # método de classe
+    def super_homem(cls):
+        clark = cls('Kal-el')
+        clark._Pessoa__especie = 'Criptoniano'
+        return clark
 ```
 - Instância: Uma instância é um objeto específico criado a partir de uma classe. Cada instância compartilha o mesmo 
 conjunto de atributos definidos pela classe, mas pode ter valores diferentes para esses atributos.
 ```python
-#criando duas instâncias da classe Pessoa.
-pessoa1 = Pessoa('Eduardo')
-pessoa2 = Pessoa()
-pessoa2.nome = 'Maria'
+
+if __name__ == '__main__':
+    #criando duas instâncias da classe Pessoa.
+    pessoa1 = Pessoa('Eduardo')
+    pessoa2 = Pessoa('Maria')
+```
+``print:``
+```shell
+Pessoa 1: Eduardo
+
+Pessoa 2: Maria
 ```
 - Atributos: são variáveis que pertencem à classe, no nosso exemplo ambas as instâncias, *pessoa1* e *pessoa2*, compartilham 
 o atributo nome, mas com valores diferentes.
@@ -93,15 +105,19 @@ print(f'Pessoa 1: {pessoa1.nome}', f'Pessoa 2: {pessoa2.nome}', sep='\n\n')
 ```
 ``print:``
 ```shell
-Pessoa 1: Eduardo
+Pessoa 1 nome: Eduardo
 
-Pessoa 2: Maria
+Pessoa 2 nome: Maria
 ```
 - Parâmetros: São dados passados para a classe (objeto) ou função para que ela realize alguma ação. Nossa classe *Pessoa()*
 possui um parâmetro *nome*, que possui o valor padrão None, se esse parâmetro for passado para a classe no momento que ela
 é instânciada, ele será repassado para o atributo *nome* da classe.
 ```python
 pessoa3 = Pessoa('João')
+```
+``print:``
+```shell
+Pessoa 3: João
 ```
 - Propriedade: Uma propriedade de classe é um atributo que pertence à própria classe, não a uma instância 
 específica dessa classe. Isso significa que todos os objetos criados a partir dessa classe compartilham o mesmo valor 
@@ -139,13 +155,14 @@ e estou estudando programação!
 - classmethod: Um método de classe é um método que está vinculado à classe, não a uma instância específica da classe, portanto,
 podem ser usados sem a necessidade de se instanciar a classe. Exemplos de uso incluem métodos de fábrica.
 ```python
-pessoa4 = Pessoa.super() # classmethod
-
-print(f'{pessoa4.nome} : {pessoa4.especie}')
+if __name__ == '__main__':
+    pessoa4 = Pessoa.super_homem()
+    
+    print(f'Pessoa 4: {pessoa4.nome} : {pessoa4.especie}')
 ```
 ``print:``
 ```shell
-Kal-El : criptoniano
+Pessoa 4: Kal-El : Criptoniano
 ```
 Agora que conhecemos um pouco sobre objetos em Python, vamos falar um pouco sobre o design pattern do nosso objeto. 
 
