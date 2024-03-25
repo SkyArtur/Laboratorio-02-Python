@@ -74,7 +74,7 @@ class Pessoa:
 
     @classmethod # método de classe
     def super(cls):
-        superhomen = cls('Clark Kent')
+        superhomen = cls('Kal-El')
         cls.__especie = 'criptoniano'
         return superhomen
 ```
@@ -125,11 +125,11 @@ pessoa1.apresentar()
 ```shell
 Olá eu sou Eduardo
 ```
-- staticmethod: Em Python, métodos estáticos são funções que permitem que um método de classe executem ações, sem 
-interagirem com qualquer atributo ou propriedade da classe.
+- staticmethod: Em Python, métodos estáticos são funções que permitem que um método de classe execute ações, sem 
+interagir com qualquer atributo ou propriedade da classe.
 ```python
-pessoa2.apresentar()
-pessoa2.falar('e estou estudando programação!')
+pessoa2.apresentar() # método
+pessoa2.falar('e estou estudando programação!') # staticmethod
 ```
 ``print:``
 ```shell
@@ -139,15 +139,15 @@ e estou estudando programação!
 - classmethod: Um método de classe é um método que está vinculado à classe, não a uma instância específica da classe, portanto,
 podem ser usados sem a necessidade de se instanciar a classe. Exemplos de uso incluem métodos de fábrica.
 ```python
-pessoa4 = Pessoa.super()
+pessoa4 = Pessoa.super() # classmethod
 
 print(f'{pessoa4.nome} : {pessoa4.especie}')
 ```
 ``print:``
 ```shell
-Clark Kent : criptoniano
+Kal-El : criptoniano
 ```
-Agora que conhecemos um pouco sobre objetos em Python, vamos falar um pouco sobre o design patterns do nosso objeto. 
+Agora que conhecemos um pouco sobre objetos em Python, vamos falar um pouco sobre o design pattern do nosso objeto. 
 
 ## Falando um pouco sobre padrões de projetos
 
@@ -161,6 +161,7 @@ Podem ser definidos em:
 Nosso objeto *Connector()* atenderá ao padrão Singleton, neste padrão, apenas uma instância da classe existe durante toda
 a execução do software, fornecendo um ponto global de acesso a essa instância.
 ```python
+# ./objects/connector.py
 class Connector:
     __instance = None
 
